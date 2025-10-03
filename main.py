@@ -9,13 +9,13 @@ API_TOKEN = "7549621572:AAHDbr_7VgIqa_ivBFRjWa5tOIwK1pyTL3Q"
 CHANNEL_ID = -1002757443787  # Kanal ID
 
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
+dp = Dispatcher(bot)
 
 # Foydalanuvchilarni vaqt bilan saqlash
 users = {}
 
 @dp.chat_member(ChatMemberUpdatedFilter(member_status_changed=True))
-async def track_new_member(event: ChatMemberUpdated, bot: Bot):
+async def track_new_member(event: ChatMemberUpdated):
     if event.chat.id == CHANNEL_ID and event.new_chat_member.status == "member":
         user_id = event.from_user.id
         users[user_id] = datetime.datetime.now()
@@ -38,7 +38,7 @@ async def check_expired():
 
 async def main():
     asyncio.create_task(check_expired())
-    await dp.start_polling(bot)
+    await dp.start_polling()
 
 if __name__ == "__main__":
     asyncio.run(main())
